@@ -1,5 +1,5 @@
-import axios from 'axios';
-import cors from 'cors';
+const axios = require('axios');
+const cors = require('cors');
 
 // Initialize CORS middleware
 const corsMiddleware = cors();
@@ -14,7 +14,7 @@ const webflowApi = axios.create({
   }
 });
 
-export default (req, res) => {
+module.exports = (req, res) => {
   corsMiddleware(req, res, async () => {
     console.log(`[${new Date().toISOString()}] Incoming request: ${req.method} ${req.url}`);
 
