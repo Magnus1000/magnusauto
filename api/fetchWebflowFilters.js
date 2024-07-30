@@ -1,11 +1,18 @@
-import Webflow from 'webflow-api';
+import axios from 'axios';
 import cors from 'cors';
 
 // Initialize CORS middleware
 const corsMiddleware = cors();
 
-// Initialize Webflow client
-const webflow = new Webflow({ token: process.env.WEBFLOW_API_TOKEN });
+// Create an axios instance with base configuration
+const webflowApi = axios.create({
+  baseURL: 'https://api.webflow.com/v2',
+  headers: {
+    'Authorization': `Bearer ${process.env.WEBFLOW_API_TOKEN}`,
+    'accept': 'application/json',
+    'content-type': 'application/json'
+  }
+});
 
 export default (req, res) => {
   corsMiddleware(req, res, async () => {
@@ -19,23 +26,30 @@ export default (req, res) => {
 
     try {
       // Fetch products from Webflow API
-      const collectionId = process.env.COLLECTION_ID;
-      if (!collectionId) {
-        console.error(`[${new Date().toISOString()}] Collection ID not provided`);
-        return res.status(400).json({ error: 'Collection ID not provided' });
+      const siteId = process.env.SITE_ID;
+      if (!siteId) {
+        console.error(`[${new Date().toISOString()}] Site ID not provided`);
+        return res.status(400).json({ error: 'Site ID not provided' });
       }
 
-      console.log(`[${new Date().toISOString()}] Fetching collection with ID: ${collectionId}`);
-      const collection = await webflow.collection({ collectionId });
-      const items = await collection.items();
+      console.log(`[${new Date().toISOString()}] Fetching products for site ID: ${siteId}`);
+      const response = await webflowApi.get(`/sites/${siteId}/products`, {
+        params: {
+          limit: 100 // Adjust as needed, max is 100
+        }
+      });
 
-      console.log(`[${new Date().toISOString()}] Fetched products: ${JSON.stringify(items)}`);
+      console.log(`[${new Date().toISOString()}] Fetched products: ${JSON.stringify(response.data)}`);
 
       // Return the products
-      res.status(200).json(items);
+      res.status(200).json(response.data);
     } catch (error) {
-      console.error(`[${new Date().toISOString()}] Error fetching products:`, error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error(`[${new Date().toISOString()}] Error fetching products:`, error.response?.data || error.message);
+      if (error.response) {
+        res.status(error.response.status).json({ error: error.response.data });
+      } else {
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
     }
   });
 };
