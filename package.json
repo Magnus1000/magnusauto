@@ -1,16 +1,16 @@
 {
-  "name": "magnus-auto",
-  "version": "1.0.0",
-  "description": "Magnus Auto Project",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "webflow-api": "^1.0.0",
-    "axios": "^1.4.0"
-  },
-  "author": "",
-  "license": "ISC"
-}
+    "name": "magnusinc",
+    "version": "1.0.0",
+    "description": "",
+    "main": "MagnusAuto",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "axios": "^0.21.1",
+      "cors": "^2.8.5",
+    }
+  }
+  
