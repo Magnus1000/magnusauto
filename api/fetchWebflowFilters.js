@@ -27,9 +27,11 @@ module.exports = (req, res) => {
     try {
       // Fetch products from Webflow API
       const siteId = process.env.SITE_ID;
+      console.log(`[${new Date().toISOString()}] Attempting to use SITE_ID: ${siteId}`);
+
       if (!siteId) {
-        console.error(`[${new Date().toISOString()}] Site ID not provided`);
-        return res.status(400).json({ error: 'Site ID not provided' });
+        console.error(`[${new Date().toISOString()}] SITE_ID environment variable is not set`);
+        return res.status(400).json({ error: 'SITE_ID environment variable is not set' });
       }
 
       console.log(`[${new Date().toISOString()}] Fetching products for site ID: ${siteId}`);
@@ -39,7 +41,7 @@ module.exports = (req, res) => {
         }
       });
 
-      console.log(`[${new Date().toISOString()}] Fetched products: ${JSON.stringify(response.data)}`);
+      console.log(`[${new Date().toISOString()}] Fetched products successfully. Count: ${response.data.items?.length || 0}`);
 
       // Return the products
       res.status(200).json(response.data);
