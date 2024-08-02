@@ -33,9 +33,24 @@ const Filters = () => {
 
             const data = await response.json();
             console.log('Fetched Webflow products:', data);
+
+            // Filter products based on returned category IDs
+            filterProducts(data.categoryIds);
         } catch (error) {
             console.error('Error fetching Webflow products:', error);
         }
+    }
+
+    function filterProducts(categoryIds) {
+        const productItems = document.querySelectorAll('.product-item');
+        productItems.forEach(item => {
+            const categoryId = item.querySelector('.data-attribute-div div').getAttribute('data-category-id');
+            if (categoryIds.includes(categoryId)) {
+                item.classList.remove('hidden');
+            } else {
+                item.classList.add('hidden');
+            }
+        });
     }
 
     return (
@@ -57,4 +72,4 @@ const Filters = () => {
     );
 }
 
-ReactDOM.render(<Filters />, document.getElementById('vehicleFilters'));
+ReactDOM.render(React.createElement(Filters), document.getElementById('vehicleFilters'));
