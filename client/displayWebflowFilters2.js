@@ -71,11 +71,11 @@ const Filters = () => {
                   Acura
                 </button>
             </div>
-            <select className="dropdown-field-dark" value={year} onChange={(e) => setYear(e.target.value)}>
+            <select className="dropdown-field-dark w-select" value={year} onChange={(e) => setYear(e.target.value)}>
                 <option value="">Select Year</option>
                 {years.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
-            <select className="dropdown-field-dark" value={model} onChange={(e) => setModel(e.target.value)}>
+            <select className="dropdown-field-dark w-select" value={model} onChange={(e) => setModel(e.target.value)}>
                 <option value="">Select Model</option>
                 {modelsByMake[make].map(m => <option key={m} value={m}>{m}</option>)}
             </select>
