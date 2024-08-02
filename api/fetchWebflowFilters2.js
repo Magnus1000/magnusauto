@@ -23,17 +23,17 @@ module.exports = (req, res) => {
       // Extract query parameters
       const { make, model, year } = req.query;
 
-      // Fetch products from Airtable
+      // Fetch categories from Airtable
       const baseId = process.env.AIRTABLE_BASE_ID;
       const tableId = process.env.AIRTABLE_CATEGORIES_TABLE_ID;
       console.log(`[${new Date().toISOString()}] Attempting to use AIRTABLE_BASE_ID: ${baseId} and AIRTABLE_CATEGORIES_TABLE_ID: ${tableId}`);
 
       if (!baseId || !tableId) {
         console.error(`[${new Date().toISOString()}] AIRTABLE_BASE_ID or AIRTABLE_CATEGORIES_TABLE_ID environment variable is not set`);
-        return res.status(400).json({ error: 'AIRTABLE_BASE_ID or AIRTABLE_CATEGORIES_TABLE_IDD environment variable is not set' });
+        return res.status(400).json({ error: 'AIRTABLE_BASE_ID or AIRTABLE_CATEGORIES_TABLE_ID environment variable is not set' });
       }
 
-      console.log(`[${new Date().toISOString()}] Fetching products from Airtable`);
+      console.log(`[${new Date().toISOString()}] Fetching categories from Airtable`);
 
       const base = Airtable.base(baseId);
       const table = base(tableId);
@@ -60,26 +60,27 @@ module.exports = (req, res) => {
         filterByFormula: filterByFormula || undefined
       }).all();
 
-      console.log(`[${new Date().toISOString()}] Fetched products successfully. Count: ${records.length}`);
+      console.log(`[${new Date().toISOString()}] Fetched categories successfully. Count: ${records.length}`);
 
-      // Transform Airtable response to match the expected format
+      // Transform Airtable response and extract category_ids
       const transformedData = {
         items: records.map(record => ({
-          id: record.id,
           ...record.fields
         }))
       };
 
-      // Extract category IDs
-      const categoryIds = records.map(record => record.id);
+      // Extract category_ids
+      const categoryIds = records.map(record => record.fields.category_id).filter(Boolean);
 
-      // Return the transformed products and category IDs
+      console.log(`[${new Date().toISOString()}] Extracted category_ids: ${categoryIds.join(', ')}`);
+
+      // Return the transformed categories and category_ids
       res.status(200).json({
         ...transformedData,
         categoryIds: categoryIds
       });
     } catch (error) {
-      console.error(`[${new Date().toISOString()}] Error fetching products:`, error.message);
+      console.error(`[${new Date().toISOString()}] Error fetching categories:`, error.message);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
