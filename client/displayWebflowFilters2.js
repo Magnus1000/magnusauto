@@ -54,20 +54,32 @@ const Filters = () => {
     }
 
     return (
-        <div>
-            <div>
-                <button onClick={() => setMake('Honda')} disabled={make === 'Honda'}>Honda</button>
-                <button onClick={() => setMake('Acura')} disabled={make === 'Acura'}>Acura</button>
+        <div className="filters-wrapper">
+            <div className="dual-button-wrapper">
+                <button 
+                  className={`dual-button left ${make === 'Honda' ? 'selected' : ''}`} 
+                  onClick={() => setMake('Honda')} 
+                  disabled={make === 'Honda'}
+                >
+                  Honda
+                </button>
+                <button 
+                  className={`dual-button right ${make === 'Acura' ? 'selected' : ''}`} 
+                  onClick={() => setMake('Acura')} 
+                  disabled={make === 'Acura'}
+                >
+                  Acura
+                </button>
             </div>
-            <select value={year} onChange={(e) => setYear(e.target.value)}>
+            <select className="dropdown-field-dark" value={year} onChange={(e) => setYear(e.target.value)}>
                 <option value="">Select Year</option>
                 {years.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
-            <select value={model} onChange={(e) => setModel(e.target.value)}>
+            <select className="dropdown-field-dark" value={model} onChange={(e) => setModel(e.target.value)}>
                 <option value="">Select Model</option>
                 {modelsByMake[make].map(m => <option key={m} value={m}>{m}</option>)}
             </select>
-            <button onClick={fetchWebflowProducts}>Apply Filters</button>
+            <button className="outline-button" onClick={fetchWebflowProducts}>Apply Filters</button>
         </div>
     );
 }
