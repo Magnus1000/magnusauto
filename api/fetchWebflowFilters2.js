@@ -20,9 +20,12 @@ module.exports = (req, res) => {
     }
 
     try {
+      // Extract query parameters
+      const { make, model, year } = req.query;
+
       // Fetch products from Airtable
       const baseId = process.env.AIRTABLE_BASE_ID;
-      const tableId = process.env.AIRTABLE_TABLE_ID;
+      const tableId = process.env.AIRTABLE_CATEGORIES_TABLE_ID;
       console.log(`[${new Date().toISOString()}] Attempting to use AIRTABLE_BASE_ID: ${baseId} and AIRTABLE_TABLE_ID: ${tableId}`);
 
       if (!baseId || !tableId) {
@@ -31,13 +34,30 @@ module.exports = (req, res) => {
       }
 
       console.log(`[${new Date().toISOString()}] Fetching products from Airtable`);
-      
+
       const base = Airtable.base(baseId);
       const table = base(tableId);
 
+      // Construct the filter formula
+      let filterFormulaParts = [];
+      if (make) {
+        filterFormulaParts.push(`{Make} = '${make}'`);
+      }
+      if (model) {
+        filterFormulaParts.push(`{Model} = '${model}'`);
+      }
+      if (year) {
+        filterFormulaParts.push(`OR(FIND('${year}', {Years}) > 0, {Years} = '${year}')`);
+      }
+
+      let filterByFormula = filterFormulaParts.length > 0 ? `AND(${filterFormulaParts.join(', ')})` : '';
+
+      console.log(`[${new Date().toISOString()}] Filter formula: ${filterByFormula}`);
+
       const records = await table.select({
         maxRecords: 100, // Adjust as needed
-        view: 'Grid view' // Adjust to your view name if different
+        view: 'Grid view', // Adjust to your view name if different
+        filterByFormula: filterByFormula || undefined
       }).all();
 
       console.log(`[${new Date().toISOString()}] Fetched products successfully. Count: ${records.length}`);
@@ -50,8 +70,14 @@ module.exports = (req, res) => {
         }))
       };
 
-      // Return the transformed products
-      res.status(200).json(transformedData);
+      // Extract category IDs
+      const categoryIds = records.map(record => record.id);
+
+      // Return the transformed products and category IDs
+      res.status(200).json({
+        ...transformedData,
+        categoryIds: categoryIds
+      });
     } catch (error) {
       console.error(`[${new Date().toISOString()}] Error fetching products:`, error.message);
       res.status(500).json({ error: 'Internal Server Error' });
