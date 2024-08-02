@@ -26,11 +26,11 @@ module.exports = (req, res) => {
       // Fetch products from Airtable
       const baseId = process.env.AIRTABLE_BASE_ID;
       const tableId = process.env.AIRTABLE_CATEGORIES_TABLE_ID;
-      console.log(`[${new Date().toISOString()}] Attempting to use AIRTABLE_BASE_ID: ${baseId} and AIRTABLE_TABLE_ID: ${tableId}`);
+      console.log(`[${new Date().toISOString()}] Attempting to use AIRTABLE_BASE_ID: ${baseId} and AIRTABLE_CATEGORIES_TABLE_ID: ${tableId}`);
 
       if (!baseId || !tableId) {
-        console.error(`[${new Date().toISOString()}] AIRTABLE_BASE_ID or AIRTABLE_TABLE_ID environment variable is not set`);
-        return res.status(400).json({ error: 'AIRTABLE_BASE_ID or AIRTABLE_TABLE_ID environment variable is not set' });
+        console.error(`[${new Date().toISOString()}] AIRTABLE_BASE_ID or AIRTABLE_CATEGORIES_TABLE_ID environment variable is not set`);
+        return res.status(400).json({ error: 'AIRTABLE_BASE_ID or AIRTABLE_CATEGORIES_TABLE_IDD environment variable is not set' });
       }
 
       console.log(`[${new Date().toISOString()}] Fetching products from Airtable`);
