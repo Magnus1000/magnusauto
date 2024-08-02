@@ -2,27 +2,19 @@ const Filters = () => {
     const [make, setMake] = React.useState('Honda');
     const [year, setYear] = React.useState('');
     const [model, setModel] = React.useState('');
-    const [models, setModels] = React.useState([]);
 
     const years = Array.from({length: 2019 - 1998 + 1}, (_, i) => 1998 + i);
 
-    React.useEffect(() => {
-        fetchModels();
-    }, [make]);
-
-    async function fetchModels() {
-        try {
-            const serverlessUrl = 'https://magnusauto-magnus1000team.vercel.app/api/fetchWebflowFilters2';
-            const response = await fetch(`${serverlessUrl}?make=${make}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            setModels(data.models || []);
-        } catch (error) {
-            console.error('Error fetching models:', error);
-        }
-    }
+    const modelsByMake = {
+        Honda: [
+            'Accord', 'Civic', 'CR-V', 'Pilot', 'Odyssey', 'Fit', 'HR-V',
+            'Ridgeline', 'Insight', 'Element', 'S2000', 'Passport'
+        ],
+        Acura: [
+            'TL', 'MDX', 'RDX', 'TSX', 'ILX', 'RLX', 'NSX', 'RSX',
+            'CL', 'RL', 'ZDX', 'Integra', 'Legend'
+        ]
+    };
 
     async function fetchWebflowProducts() {
         console.log(`[${new Date().toISOString()}] Starting fetchWebflowProducts function`);
@@ -58,7 +50,7 @@ const Filters = () => {
             </select>
             <select value={model} onChange={(e) => setModel(e.target.value)}>
                 <option value="">Select Model</option>
-                {models.map(m => <option key={m} value={m}>{m}</option>)}
+                {modelsByMake[make].map(m => <option key={m} value={m}>{m}</option>)}
             </select>
             <button onClick={fetchWebflowProducts}>Apply Filters</button>
         </div>
