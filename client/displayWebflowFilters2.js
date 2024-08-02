@@ -80,7 +80,7 @@ const Filters = () => {
                 {modelsByMake[make].map(m => <option key={m} value={m}>{m}</option>)}
             </select>
             <div className="button-wrapper">
-                <button className="outline-button w-button" onClick={fetchWebflowProducts}>Find Stereos</button>
+                <button className="outline-button 100 w-button" onClick={fetchWebflowProducts}>Find Stereos</button>
             </div>
         </div>
     );
